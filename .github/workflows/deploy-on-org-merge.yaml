@@ -37,7 +37,7 @@ jobs:
         #   credentials_json: ${{ secrets.GCP_SA_KEY_ARXIV_PRODUCTION }}
 
       - name: Trigger production deployment
-      - run: echo "trigger production build."
+        run: echo "trigger production build."
         # run: |
         #   gcloud builds triggers run ${{ vars.ARXIV_PRODUCTION_TRIGGER_ID }} \
         #     --project=arxiv-production \
