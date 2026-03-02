@@ -1,17 +1,13 @@
 name: Trigger GCP deployments on upstream merge
 
 on:
-  workflow_run:
-    workflows: ["org-notify-merge-arxiv-browse"]          # must match the name: field upstream repo exactly
-    branches: [main, develop]
-    types: [completed]
+  repository_dispatch:
+    types: [repo-upstream-updated]
 
 jobs:
   trigger-development:
     runs-on: ubuntu-latest
-    if: |
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'develop'
+    if: github.event.client_payload.branch == 'develop'
     steps:
       # - name: Authenticate to GCP (development)
         # uses: google-github-actions/auth@v2
@@ -27,9 +23,7 @@ jobs:
 
   trigger-production:
     runs-on: ubuntu-latest
-    if: |
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'main'
+    if: github.event.client_payload.branch == 'main'
     steps:
       # - name: Authenticate to GCP (production)
         # uses: google-github-actions/auth@v2
