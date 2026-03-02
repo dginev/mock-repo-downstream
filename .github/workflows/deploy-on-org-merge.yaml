@@ -1,0 +1,44 @@
+name: Trigger GCP deployments on upstream merge
+
+on:
+  workflow_run:
+    workflows: ["org-notify-merge-arxiv-browse"]          # must match the name: field upstream repo exactly
+    branches: [main, develop]
+    types: [completed]
+
+jobs:
+  trigger-development:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'develop'
+    steps:
+      # - name: Authenticate to GCP (development)
+        # uses: google-github-actions/auth@v2
+        # with:
+        #   credentials_json: ${{ secrets.GCP_SA_KEY_ARXIV_DEVELOPMENT }}
+
+      - name: Trigger development deployment
+        run: echo "trigger dev build."
+        # run: |
+        #   gcloud builds triggers run ${{ vars.ARXIV_DEVELOPMENT_TRIGGER_ID }} \
+        #     --project=arxiv-development \
+        #     --branch=develop
+
+  trigger-production:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
+    steps:
+      # - name: Authenticate to GCP (production)
+        # uses: google-github-actions/auth@v2
+        # with:
+        #   credentials_json: ${{ secrets.GCP_SA_KEY_ARXIV_PRODUCTION }}
+
+      - name: Trigger production deployment
+      - run: echo "trigger production build."
+        # run: |
+        #   gcloud builds triggers run ${{ vars.ARXIV_PRODUCTION_TRIGGER_ID }} \
+        #     --project=arxiv-production \
+        #     --branch=main
